@@ -6,6 +6,8 @@ using UnityEngine;
 [RequireComponent(typeof(Rigidbody))]
 public class SwingerController : MonoBehaviour
 {
+    private static bool created = false;
+
     [SerializeField]
     private float m_moveSpeed = 10.0f, m_turnSpeed = 20.0f;
 
@@ -18,6 +20,18 @@ public class SwingerController : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
+        if (!created)
+        {
+            DontDestroyOnLoad(this.gameObject);
+            created = true;
+            Debug.Log("Awake(don't destroy on load): " + this.gameObject);
+        }
+        else
+        {
+            Debug.Log("Destroying Duplicate: " + this.gameObject);
+            Destroy(this.gameObject);
+        }
+
         m_input = GetComponent<SwingerInput>();
         if(m_input == null)
         {
@@ -39,12 +53,13 @@ public class SwingerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        m_rigidbody.velocity = m_moveSpeed * m_move;
+        
     }
 
     public void Move (Vector2 move, Vector2 look)
     {
         m_move = transform.TransformDirection(new Vector3(move.normalized.x, 0.0f, move.normalized.y));
+        m_rigidbody.velocity = m_moveSpeed * m_move;
         transform.Rotate(0.0f, m_turnSpeed * look.x, 0.0f);
     }
 }

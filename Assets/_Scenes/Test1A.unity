@@ -125,7 +125,7 @@ GameObject:
   - component: {fileID: 9767044}
   - component: {fileID: 9767043}
   - component: {fileID: 9767042}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Cube
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -296,9 +296,9 @@ GameObject:
   - component: {fileID: 203964309}
   - component: {fileID: 203964313}
   - component: {fileID: 203964312}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Swinger
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -315,7 +315,7 @@ CapsuleCollider:
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
-  m_Center: {x: 0, y: 1, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &203964310
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -326,7 +326,7 @@ Rigidbody:
   m_Mass: 1
   m_Drag: 0
   m_AngularDrag: Infinity
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
@@ -338,7 +338,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 203964308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 1.1, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1579733641}
@@ -606,6 +606,60 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 618312440}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &657049489
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 657049491}
+  - component: {fileID: 657049490}
+  - component: {fileID: 657049492}
+  m_Layer: 0
+  m_Name: SceneLoadTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!65 &657049490
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 657049489}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 100, z: 100}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &657049491
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 657049489}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 49, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &657049492
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 657049489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98746d71e82c94443baac0c8cc95507d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_loadSceneName: Test1B
 --- !u!1 &940300640
 GameObject:
   m_ObjectHideFlags: 0
@@ -651,7 +705,7 @@ GameObject:
   - component: {fileID: 1214729160}
   - component: {fileID: 1214729159}
   - component: {fileID: 1214729158}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Model
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -665,7 +719,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1214729156}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 9767041}
@@ -908,7 +962,7 @@ GameObject:
   - component: {fileID: 1579733640}
   - component: {fileID: 1579733639}
   - component: {fileID: 1579733638}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Main Camera
   m_TagString: MainCamera
   m_Icon: {fileID: 0}
@@ -972,7 +1026,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1579733637}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 203964311}
@@ -1074,7 +1128,7 @@ GameObject:
   - component: {fileID: 1871369441}
   m_Layer: 0
   m_Name: SceneManager
-  m_TagString: Untagged
+  m_TagString: GameController
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1090,6 +1144,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8f028cb34885554a8fb7d94c4690048, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_paused: 0
+  m_loadingScene: 0
+  m_unloadingScene: 0
 --- !u!4 &1871369442
 Transform:
   m_ObjectHideFlags: 0
