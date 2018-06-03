@@ -7,6 +7,9 @@ public class SceneLoadTrigger : MonoBehaviour
     [SerializeField]
     private string m_loadSceneName;
 
+    [SerializeField]
+    private bool m_load = true;
+
     private SceneController m_sceneController;
 
 	// Use this for initialization
@@ -29,7 +32,14 @@ public class SceneLoadTrigger : MonoBehaviour
     {
         if(other.tag == "Player")
         {
-            m_sceneController.LoadScene(m_loadSceneName);
+            if(m_load)
+            {
+                m_sceneController.LoadScene(m_loadSceneName);
+            }
+            else
+            {
+                m_sceneController.UnloadScene(m_loadSceneName);
+            }
         }
     }
 }

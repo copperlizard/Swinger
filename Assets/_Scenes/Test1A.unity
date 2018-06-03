@@ -14,7 +14,7 @@ OcclusionCullingSettings:
 RenderSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 9
-  m_Fog: 1
+  m_Fog: 0
   m_FogColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
   m_FogMode: 3
   m_FogDensity: 0.01
@@ -89,7 +89,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
-  m_LightingDataAsset: {fileID: 112000004, guid: 335861a49917dc34789715d0d0891e38,
+  m_LightingDataAsset: {fileID: 112000014, guid: 335861a49917dc34789715d0d0891e38,
     type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -296,6 +296,7 @@ GameObject:
   - component: {fileID: 203964309}
   - component: {fileID: 203964313}
   - component: {fileID: 203964312}
+  - component: {fileID: 203964314}
   m_Layer: 9
   m_Name: Swinger
   m_TagString: Player
@@ -311,7 +312,7 @@ CapsuleCollider:
   m_GameObject: {fileID: 203964308}
   m_Material: {fileID: 0}
   m_IsTrigger: 0
-  m_Enabled: 1
+  m_Enabled: 0
   m_Radius: 0.5
   m_Height: 2
   m_Direction: 1
@@ -323,10 +324,10 @@ Rigidbody:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 203964308}
   serializedVersion: 2
-  m_Mass: 1
+  m_Mass: 60
   m_Drag: 0
-  m_AngularDrag: Infinity
-  m_UseGravity: 0
+  m_AngularDrag: 1000
+  m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80
@@ -338,7 +339,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 203964308}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.1, z: 0}
+  m_LocalPosition: {x: 0, y: 6.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1579733641}
@@ -357,8 +358,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8853ac717f32414f9d621bfa2f23cfb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_moveSpeed: 10
-  m_turnSpeed: 10
+  m_camHeight: 1
+  m_moveSpeed: 50
+  m_turnSpeed: 5
+  m_leftHandPos: {x: -0.25, y: 0.25, z: 0}
 --- !u!114 &203964313
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -371,6 +374,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_maxReach: 100
+--- !u!135 &203964314
+SphereCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 203964308}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &323711584
 GameObject:
   m_ObjectHideFlags: 0
@@ -380,8 +395,9 @@ GameObject:
   m_Component:
   - component: {fileID: 323711586}
   - component: {fileID: 323711585}
+  - component: {fileID: 323711587}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: SunA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -434,8 +450,19 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+--- !u!114 &323711587
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 323711584}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2c26cb8e263006b44aec776568edba22, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &612163709
 GameObject:
   m_ObjectHideFlags: 0
@@ -617,11 +644,11 @@ GameObject:
   - component: {fileID: 657049490}
   - component: {fileID: 657049492}
   m_Layer: 0
-  m_Name: SceneLoadTrigger
+  m_Name: SceneLoadTriggerB
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 4294967295
   m_IsActive: 1
 --- !u!65 &657049490
 BoxCollider:
@@ -660,6 +687,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_loadSceneName: Test1B
+  m_load: 1
 --- !u!1 &940300640
 GameObject:
   m_ObjectHideFlags: 0
@@ -692,7 +720,62 @@ Transform:
   - {fileID: 618312441}
   - {fileID: 1281450246}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1172825807
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1172825810}
+  - component: {fileID: 1172825809}
+  - component: {fileID: 1172825808}
+  m_Layer: 0
+  m_Name: SceneUnLoadTriggerA
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 4294967295
+  m_IsActive: 1
+--- !u!114 &1172825808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1172825807}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 98746d71e82c94443baac0c8cc95507d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_loadSceneName: Test1A
+  m_load: 0
+--- !u!65 &1172825809
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1172825807}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 100, z: 100}
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!4 &1172825810
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1172825807}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 60, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1214729156
 GameObject:
@@ -754,7 +837,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 10303, guid: 0000000000000000f000000000000000, type: 0}
+  - {fileID: 2100000, guid: a98572df861f4c04a9f15c7e7f481939, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

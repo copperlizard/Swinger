@@ -32,6 +32,52 @@ public class SwingerInput : MonoBehaviour
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
             {
+                // Left rope
+                m_controller.ShootRope(SwingerController.Rope.Left, m_clickAt);
+            }
+        }
+
+        if (Input.GetButtonUp("Fire1"))
+        {
+            // Release left rope
+            m_controller.ReleaseRope(SwingerController.Rope.Left);
+        }
+
+        // Get Mouse2 Input
+        if (Input.GetButtonDown("Fire2"))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
+            {
+                // Right Rope
+                m_controller.ShootRope(SwingerController.Rope.Right, m_clickAt);
+            }
+        }
+
+        if (Input.GetButtonUp("Fire2"))
+        {
+            // Release right rope
+            m_controller.ReleaseRope(SwingerController.Rope.Right);
+        }
+
+        // Get WASD input
+        m_move.x = Input.GetAxis("Horizontal");
+        m_move.y = Input.GetAxis("Vertical");
+
+        m_look.x = Input.GetAxis("Mouse X");
+        m_look.y = Input.GetAxis("Mouse Y");
+
+        m_controller.Move(m_move, m_look);
+    }
+
+    /*private void FixedUpdate()
+    {
+        // Get Mouse1 Input
+        if (Input.GetButtonDown("Fire1"))
+        {
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
+            {
                 // Left Rope
             }
         }
@@ -54,5 +100,5 @@ public class SwingerInput : MonoBehaviour
         m_look.y = Input.GetAxis("Mouse Y");
 
         m_controller.Move(m_move, m_look);
-    }
+    }*/
 }
