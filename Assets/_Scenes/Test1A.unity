@@ -294,9 +294,10 @@ GameObject:
   - component: {fileID: 203964311}
   - component: {fileID: 203964310}
   - component: {fileID: 203964309}
+  - component: {fileID: 203964314}
   - component: {fileID: 203964313}
   - component: {fileID: 203964312}
-  - component: {fileID: 203964314}
+  - component: {fileID: 203964315}
   m_Layer: 9
   m_Name: Swinger
   m_TagString: Player
@@ -325,12 +326,12 @@ Rigidbody:
   m_GameObject: {fileID: 203964308}
   serializedVersion: 2
   m_Mass: 60
-  m_Drag: 0
+  m_Drag: 0.1
   m_AngularDrag: 1000
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 80
+  m_Constraints: 64
   m_CollisionDetection: 0
 --- !u!4 &203964311
 Transform:
@@ -338,7 +339,7 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 203964308}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 6.36, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
@@ -346,7 +347,7 @@ Transform:
   - {fileID: 1214729157}
   m_Father: {fileID: 0}
   m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!114 &203964312
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -359,8 +360,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_camHeight: 1
-  m_moveSpeed: 50
-  m_turnSpeed: 5
+  m_moveSpeed: 8
+  m_airMoveSpeed: 1
+  m_turnSpeed: 2
   m_leftHandPos: {x: -0.25, y: 0.25, z: 0}
 --- !u!114 &203964313
 MonoBehaviour:
@@ -386,6 +388,17 @@ SphereCollider:
   serializedVersion: 2
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &203964315
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 203964308}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab2648985c3fc0041a513dc6222b0cfc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &323711584
 GameObject:
   m_ObjectHideFlags: 0
@@ -1084,7 +1097,7 @@ Camera:
     height: 1
   near clip plane: 0.3
   far clip plane: 1000
-  field of view: 90
+  field of view: 60
   orthographic: 0
   orthographic size: 5
   m_Depth: -1

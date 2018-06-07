@@ -14,7 +14,7 @@ public class SwingerController : MonoBehaviour
     [SerializeField]
     private float m_moveSpeed = 10.0f;
     [SerializeField]
-    private float m_turnSpeed = 5.0f;
+    private float m_airMoveSpeed, m_turnSpeed = 5.0f;
 
     [Header("Misc Settings")]
     [SerializeField]
@@ -31,6 +31,8 @@ public class SwingerController : MonoBehaviour
     private RaycastHit m_leftTar, m_rightTar, m_groundAt;
 
     private Vector3 m_move;
+
+    private float m_xAng = 0.0f, m_yAng = 0.0f;
 
     private bool m_grounded = false, m_shootLeft = false, m_shootRight = false;
 
@@ -60,6 +62,10 @@ public class SwingerController : MonoBehaviour
         {
             Debug.Log("[SwingerController] m_rigidbody not found!");
         }
+
+        //Starting orientation (z always 0)
+        m_xAng = transform.rotation.eulerAngles.x;
+        m_yAng = transform.rotation.eulerAngles.y;
     }
 	
 	// Update is called once per frame
@@ -100,7 +106,11 @@ public class SwingerController : MonoBehaviour
 
             m_rigidbody.AddForce(Vector3.up * m_rigidbody.mass * 9.8f);
 
-            // Apply stopping force inversely-proportional to m_move
+            // Apply friciton
+            if(m_move.magnitude < 0.1f)
+            {
+                m_rigidbody.velocity *= 0.25f;
+            }
         }
         /*else
         {
@@ -110,9 +120,22 @@ public class SwingerController : MonoBehaviour
 
     public void Move (Vector2 move, Vector2 look)
     {
-        m_move = transform.TransformDirection(new Vector3(move.normalized.x, 0.0f, move.normalized.y));        
-        m_rigidbody.AddForce(m_move * m_moveSpeed);
-        transform.Rotate(0.0f, m_turnSpeed * look.x, 0.0f);
+        m_move = transform.TransformDirection(new Vector3(move.normalized.x, 0.0f, move.normalized.y)); 
+        
+        if(m_grounded)
+        {
+            m_rigidbody.AddForce(m_move * m_moveSpeed, ForceMode.Impulse);
+        }
+        else
+        {
+            m_rigidbody.AddForce(m_move * m_airMoveSpeed, ForceMode.Impulse);
+        }
+
+        //TODO: NEED TO "SMOOTH" LOOK...
+
+        m_xAng += m_turnSpeed * -look.y;
+        m_yAng += m_turnSpeed * look.x * ((Vector3.Dot(transform.up, Vector3.up) > 0.0f) ? 1.0f : -1.0f);
+        transform.rotation = Quaternion.Euler(m_xAng, m_yAng, 0.0f);
     }
 
     public void ShootRope(Rope rope, RaycastHit tar)
