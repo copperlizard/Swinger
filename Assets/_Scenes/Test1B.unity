@@ -675,7 +675,7 @@ GameObject:
   - component: {fileID: 1317641183}
   - component: {fileID: 1317641182}
   - component: {fileID: 1317641181}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: SceneLoadTriggerA
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -730,7 +730,7 @@ GameObject:
   - component: {fileID: 1345904861}
   - component: {fileID: 1345904860}
   - component: {fileID: 1345904859}
-  m_Layer: 0
+  m_Layer: 2
   m_Name: SceneUnLoadTriggerB
   m_TagString: Untagged
   m_Icon: {fileID: 0}

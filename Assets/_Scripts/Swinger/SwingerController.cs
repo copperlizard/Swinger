@@ -17,24 +17,25 @@ public class SwingerController : MonoBehaviour
     private float m_airMoveSpeed, m_turnSpeed = 5.0f;
 
     [Header("Misc Settings")]
-    [SerializeField]
-    private Vector3 m_leftHandPos = new Vector3(-0.25f, 0.25f, 0.0f); //in local space...
+    //[SerializeField]
+    public Vector3 m_leftHandPos = new Vector3(-0.25f, 0.25f, 0.0f); //in local space...
 
-    public enum Rope { Left, Right };
+    [HideInInspector]
+    public Vector3 m_rightHandPos; //Ymirror of left hand pos
 
     private static bool created = false;
 
     private SwingerInput m_input;
 
     private Rigidbody m_rigidbody;
-
-    private RaycastHit m_leftTar, m_rightTar, m_groundAt;
+    
+    private RaycastHit m_groundAt;
 
     private Vector3 m_move;
 
     private float m_xAng = 0.0f, m_yAng = 0.0f;
 
-    private bool m_grounded = false, m_shootLeft = false, m_shootRight = false;
+    private bool m_grounded = false;
 
 	// Use this for initialization
 	void Start ()
@@ -51,6 +52,8 @@ public class SwingerController : MonoBehaviour
             Destroy(this.gameObject);
         }
 
+        m_rightHandPos = new Vector3(-m_leftHandPos.x, m_leftHandPos.y, m_leftHandPos.z);
+
         m_input = GetComponent<SwingerInput>();
         if(m_input == null)
         {
@@ -62,6 +65,8 @@ public class SwingerController : MonoBehaviour
         {
             Debug.Log("[SwingerController] m_rigidbody not found!");
         }
+
+        
 
         //Starting orientation (z always 0)
         m_xAng = transform.rotation.eulerAngles.x;
@@ -83,7 +88,7 @@ public class SwingerController : MonoBehaviour
 
         // Ropes (ropes have both physics and visuals...)
         //   - Need to "shoot" shot ropes (ropes should have travel speed???)...
-        //   - Need to apply forces for held ropes...
+        //   - Need to apply forces for held ropes...        
 
         // Appropriate character/camera rotations/orientation...
         //   - Character Orientation should lerp towards character velocity (hopefully convey sense of "swinging")
@@ -130,38 +135,24 @@ public class SwingerController : MonoBehaviour
         {
             m_rigidbody.AddForce(m_move * m_airMoveSpeed, ForceMode.Impulse);
         }
-
-        //TODO: NEED TO "SMOOTH" LOOK...
+                
+        look.x = FSmoothstep(0.3f, 1.0f, Mathf.Abs(look.x)) * ((look.x > 0.0f)? 1.0f : -1.0f);
+        look.y = FSmoothstep(0.3f, 1.0f, Mathf.Abs(look.y)) * ((look.y > 0.0f) ? 1.0f : -1.0f); 
 
         m_xAng += m_turnSpeed * -look.y;
         m_yAng += m_turnSpeed * look.x * ((Vector3.Dot(transform.up, Vector3.up) > 0.0f) ? 1.0f : -1.0f);
         transform.rotation = Quaternion.Euler(m_xAng, m_yAng, 0.0f);
     }
 
-    public void ShootRope(Rope rope, RaycastHit tar)
+    private float FSmoothstep(float edge0, float edge1, float x)
     {
-        if (rope == Rope.Left)
-        {
-            m_shootLeft = true;
-            m_leftTar = tar;
-
-        }
-        else
-        {
-            m_shootRight = true;
-            m_rightTar = tar;
-        }
+        float t; 
+        t = Mathf.Clamp((x - edge0) / (edge1 - edge0), 0.0f, 1.0f);
+        return t * t * (3.0f - 2.0f * t);
     }
 
-    public void ReleaseRope(Rope rope)
+    public Vector3 Momentum()
     {
-        if(rope == Rope.Left)
-        {
-            m_shootLeft = false;
-        }
-        else
-        {
-            m_shootRight = false;
-        }
+        return m_rigidbody.mass * m_rigidbody.velocity;
     }
 }

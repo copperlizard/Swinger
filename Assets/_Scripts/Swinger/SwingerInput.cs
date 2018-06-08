@@ -6,10 +6,12 @@ using UnityEngine;
 public class SwingerInput : MonoBehaviour
 {   
     [SerializeField]
-    private float m_maxReach = 100.0f;
+    private float m_maxReach = 50.0f;
 
-    private SwingerController m_controller;
-    private SwingerCamera m_cam;
+    private SwingerController m_swinger;
+    //private SwingerCamera m_cam;
+
+    private SwingerRopeController m_ropes;
 
     private RaycastHit m_clickAt;
 
@@ -18,17 +20,23 @@ public class SwingerInput : MonoBehaviour
 	// Use this for initialization
 	void Start ()
     {
-        m_controller = GetComponent<SwingerController>();
-        if (m_controller == null)
+        m_swinger = GetComponent<SwingerController>();
+        if (m_swinger == null)
         {
             Debug.Log("[SwingerInput] m_controller not found!");
         }
 
-        m_cam = GetComponent<SwingerCamera>();
+        m_ropes = GameObject.FindGameObjectWithTag("RopeController").GetComponent<SwingerRopeController>();
+        if (m_ropes == null)
+        {
+            Debug.Log("[SwingerInput] m_ropes not found!");
+        }
+
+        /*m_cam = GetComponent<SwingerCamera>();
         if (m_cam == null)
         {
             Debug.Log("[SwingerInput] m_cam not found!");
-        }
+        }*/
     }
 	
 	// Update is called once per frame
@@ -40,14 +48,14 @@ public class SwingerInput : MonoBehaviour
             if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
             {
                 // Left rope
-                m_controller.ShootRope(SwingerController.Rope.Left, m_clickAt);
+                m_ropes.ShootRope(SwingerRopeController.Rope.Left, m_clickAt);
             }
         }
 
         if (Input.GetButtonUp("Fire1"))
         {
             // Release left rope
-            m_controller.ReleaseRope(SwingerController.Rope.Left);
+            m_ropes.ReleaseRope(SwingerRopeController.Rope.Left);
         }
 
         // Get Mouse2 Input
@@ -57,14 +65,14 @@ public class SwingerInput : MonoBehaviour
             if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
             {
                 // Right Rope
-                m_controller.ShootRope(SwingerController.Rope.Right, m_clickAt);
+                m_ropes.ShootRope(SwingerRopeController.Rope.Right, m_clickAt);
             }
         }
 
         if (Input.GetButtonUp("Fire2"))
         {
             // Release right rope
-            m_controller.ReleaseRope(SwingerController.Rope.Right);
+            m_ropes.ReleaseRope(SwingerRopeController.Rope.Right);
         }
 
         // Get WASD input
@@ -80,7 +88,7 @@ public class SwingerInput : MonoBehaviour
         m_look *= 2.0f;
         m_look -= Vector2.one;        
 
-        m_controller.Move(m_move, m_look);
+        m_swinger.Move(m_move, m_look);
     }
 
     /*private void FixedUpdate()
