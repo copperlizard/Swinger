@@ -9,12 +9,14 @@ public class SwingerController : MonoBehaviour
     [Header("Camera Settings")]
     [SerializeField]
     private float m_camHeight = 1.0f;
+    [SerializeField]
+    private float m_camLookEdge0 = 0.3f, m_camLookEdge1 = 1.0f;
 
     [Header("Movement Settings")]
     [SerializeField]
     private float m_moveSpeed = 10.0f;
     [SerializeField]
-    private float m_airMoveSpeed, m_turnSpeed = 5.0f;
+    private float m_airMoveSpeed, m_turnSpeed = 5.0f, m_jumpForce = 10.0f;
 
     [Header("Misc Settings")]
     //[SerializeField]
@@ -136,12 +138,20 @@ public class SwingerController : MonoBehaviour
             m_rigidbody.AddForce(m_move * m_airMoveSpeed, ForceMode.Impulse);
         }
                 
-        look.x = FSmoothstep(0.3f, 1.0f, Mathf.Abs(look.x)) * ((look.x > 0.0f)? 1.0f : -1.0f);
-        look.y = FSmoothstep(0.3f, 1.0f, Mathf.Abs(look.y)) * ((look.y > 0.0f) ? 1.0f : -1.0f); 
+        look.x = FSmoothstep(m_camLookEdge0, m_camLookEdge1, Mathf.Abs(look.x)) * ((look.x > 0.0f)? 1.0f : -1.0f);
+        look.y = FSmoothstep(m_camLookEdge0, m_camLookEdge1, Mathf.Abs(look.y)) * ((look.y > 0.0f) ? 1.0f : -1.0f); 
 
         m_xAng += m_turnSpeed * -look.y;
         m_yAng += m_turnSpeed * look.x * ((Vector3.Dot(transform.up, Vector3.up) > 0.0f) ? 1.0f : -1.0f);
         transform.rotation = Quaternion.Euler(m_xAng, m_yAng, 0.0f);
+    }
+
+    public void Jump ()
+    {
+        if(m_grounded)
+        {
+            m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
+        }
     }
 
     private float FSmoothstep(float edge0, float edge1, float x)

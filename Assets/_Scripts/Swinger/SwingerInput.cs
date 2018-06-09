@@ -6,7 +6,7 @@ using UnityEngine;
 public class SwingerInput : MonoBehaviour
 {   
     [SerializeField]
-    private float m_maxReach = 50.0f;
+    private float m_maxReach = 50.0f, m_clickRadius = 0.3f;
 
     private SwingerController m_swinger;
     //private SwingerCamera m_cam;
@@ -45,11 +45,17 @@ public class SwingerInput : MonoBehaviour
         if (Input.GetButtonDown("Fire1"))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
+            //if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
+            if (Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach))
             {
                 // Left rope
                 m_ropes.ShootRope(SwingerRopeController.Rope.Left, m_clickAt);
             }
+        }
+
+        if (Input.GetButtonDown("Jump"))
+        {
+            m_swinger.Jump();
         }
 
         if (Input.GetButtonUp("Fire1"))
@@ -62,7 +68,8 @@ public class SwingerInput : MonoBehaviour
         if (Input.GetButtonDown("Fire2"))
         {
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
+            //if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
+            if(Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach))
             {
                 // Right Rope
                 m_ropes.ShootRope(SwingerRopeController.Rope.Right, m_clickAt);

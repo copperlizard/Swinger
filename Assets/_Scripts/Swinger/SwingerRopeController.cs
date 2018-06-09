@@ -14,6 +14,8 @@ public class SwingerRopeController : MonoBehaviour
 
     private SwingerController m_swinger;
 
+    private Rigidbody m_swingerRigidBody;
+
     private LineRenderer m_leftRope, m_rightRope;
 
     private RaycastHit m_leftTar, m_rightTar;
@@ -41,6 +43,14 @@ public class SwingerRopeController : MonoBehaviour
         if (m_swinger == null)
         {
             Debug.Log("[SwingerRopeController] m_swinger not found!");
+        }
+        else
+        {
+            m_swingerRigidBody = m_swinger.gameObject.GetComponent<Rigidbody>();
+            if (m_swingerRigidBody == null)
+            {
+                Debug.Log("[SwingerRopeController] m_swingerRigidBody not found!");
+            }
         }
 
         m_leftRope = GetComponentsInChildren<LineRenderer>()[0];
@@ -73,19 +83,29 @@ public class SwingerRopeController : MonoBehaviour
 
     private void ApplyRopePhysics()
     {
-        //Get rope Dir
-        //Project swinger m*velocity onto dir 
-        //apply force -dir*projection
-
-
         //Left rope
         Vector3 leftDir = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos) - m_leftTar.point;
-        leftDir = leftDir.normalized * 1000.0f; //plenty of line to project onto
+        leftDir = leftDir.normalized * 100.0f; //plenty of line to project onto
         float leftForce = Vector3.Dot(m_swinger.Momentum(), leftDir);
 
-        Debug.Log("leftForce == " + leftForce.ToString());
+        //Debug.Log("leftForce == " + leftForce.ToString());
+
+        if(leftForce > 0.0f && m_shootLeft)
+        {
+            m_swingerRigidBody.AddForce(-leftDir.normalized * leftForce);
+        }
 
         //Right rope
+        Vector3 rightDir = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos) - m_rightTar.point;
+        rightDir = rightDir.normalized * 100.0f; //plenty of line to project onto
+        float rightForce = Vector3.Dot(m_swinger.Momentum(), rightDir);
+
+        //Debug.Log("rightForce == " + rightForce.ToString());
+
+        if (rightForce > 0.0f && m_shootRight)
+        {
+            m_swingerRigidBody.AddForce(-rightDir.normalized * rightForce);
+        }
     }
 
     public void ShootRope(Rope rope, RaycastHit tar)
