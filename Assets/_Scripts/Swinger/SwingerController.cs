@@ -37,7 +37,7 @@ public class SwingerController : MonoBehaviour
 
     private float m_xAng = 0.0f, m_yAng = 0.0f;
 
-    private bool m_grounded = false;
+    private bool m_grounded = false, m_jumping = false;
 
 	// Use this for initialization
 	void Start ()
@@ -102,36 +102,37 @@ public class SwingerController : MonoBehaviour
     {
         Ray ray = new Ray(transform.position, Vector3.down);
         m_grounded = Physics.Raycast(ray, out m_groundAt, m_camHeight, ~LayerMask.GetMask("Player"));
+        //m_grounded = Physics.SphereCast(ray, 0.5f, out m_groundAt, m_camHeight - 0.5f, ~LayerMask.GetMask("Player"));
         if(m_grounded)
         {
-            //m_rigidbody.useGravity = false;
+            m_rigidbody.useGravity = false;
             float sink = transform.position.y - m_groundAt.point.y;
             if (sink < m_camHeight)
             {
-                transform.position += Vector3.up * (m_camHeight - sink);
+                transform.position += Vector3.up * (m_camHeight - sink - 0.01f);
             }
 
             m_rigidbody.AddForce(Vector3.up * m_rigidbody.mass * 9.8f);
-
-            // Apply friciton
-            if(m_move.magnitude < 0.1f)
-            {
-                m_rigidbody.velocity *= 0.25f;
-            }
         }
-        /*else
+        else
         {
+            //Debug.Log("airborne!");
+            m_jumping = false;
             m_rigidbody.useGravity = true;
-        }*/
+        }
     }
 
     public void Move (Vector2 move, Vector2 look)
     {
-        m_move = transform.TransformDirection(new Vector3(move.normalized.x, 0.0f, move.normalized.y)); 
+        m_move = transform.TransformDirection(new Vector3(move.normalized.x, 0.0f, move.normalized.y));
+        m_move = Vector3.ProjectOnPlane(m_move, Vector3.up).normalized;
+        //m_move = Quaternion.Euler(0.0f, transform.rotation.eulerAngles.y, 0.0f) * new Vector3(move.normalized.x, 0.0f, move.normalized.y);
         
         if(m_grounded)
         {
-            m_rigidbody.AddForce(m_move * m_moveSpeed, ForceMode.Impulse);
+            //m_rigidbody.AddForce(m_move * m_moveSpeed, ForceMode.Impulse);
+            m_rigidbody.velocity = Vector3.Lerp(m_rigidbody.velocity, m_move * m_moveSpeed, 0.8f);
+            
         }
         else
         {
@@ -148,9 +149,11 @@ public class SwingerController : MonoBehaviour
 
     public void Jump ()
     {
-        if(m_grounded)
+        if(m_grounded && !m_jumping)
         {
             m_rigidbody.AddForce(Vector3.up * m_jumpForce, ForceMode.Impulse);
+            m_grounded = false;
+            m_jumping = true;
         }
     }
 

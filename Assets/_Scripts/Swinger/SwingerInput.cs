@@ -17,6 +17,8 @@ public class SwingerInput : MonoBehaviour
 
     private Vector2 m_move, m_look;
 
+    private bool m_shotLeft = false, m_shotRight = false; 
+
 	// Use this for initialization
 	void Start ()
     {
@@ -41,9 +43,14 @@ public class SwingerInput : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
-        // Get Mouse1 Input
-        if (Input.GetButtonDown("Fire1"))
+        if (Input.GetButton("Jump"))
         {
+            m_swinger.Jump();
+        }
+
+        if (Input.GetButton("Fire1") && !m_shotLeft)
+        {
+            m_shotLeft = true;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             //if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
             if (Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach))
@@ -53,20 +60,9 @@ public class SwingerInput : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonDown("Jump"))
+        if (Input.GetButton("Fire2") && !m_shotRight)
         {
-            m_swinger.Jump();
-        }
-
-        if (Input.GetButtonUp("Fire1"))
-        {
-            // Release left rope
-            m_ropes.ReleaseRope(SwingerRopeController.Rope.Left);
-        }
-
-        // Get Mouse2 Input
-        if (Input.GetButtonDown("Fire2"))
-        {
+            m_shotRight = true;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             //if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
             if(Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach))
@@ -76,22 +72,30 @@ public class SwingerInput : MonoBehaviour
             }
         }
 
-        if (Input.GetButtonUp("Fire2"))
+        if (!Input.GetButton("Fire1") && m_shotLeft)
         {
+            //Debug.Log("Not holding Left!");
+            // Release left rope
+            m_ropes.ReleaseRope(SwingerRopeController.Rope.Left);
+            m_shotLeft = false;
+        }
+
+        if (!Input.GetButton("Fire2") && m_shotRight)
+        {
+            //Debug.Log("Not holding Right!");
             // Release right rope
             m_ropes.ReleaseRope(SwingerRopeController.Rope.Right);
+            m_shotRight = false;
         }
 
         // Get WASD input
         m_move.x = Input.GetAxis("Horizontal");
         m_move.y = Input.GetAxis("Vertical");
 
-        //m_look.x = Input.GetAxis("Mouse X");
-        //m_look.y = Input.GetAxis("Mouse Y");
+        // Prep mouse look input
         m_look = Input.mousePosition;
         m_look.x /= Screen.width;
         m_look.y /= Screen.height;
-
         m_look *= 2.0f;
         m_look -= Vector2.one;        
 
