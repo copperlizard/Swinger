@@ -20,8 +20,8 @@ public class SwingerRopeController : MonoBehaviour
 
     private RaycastHit m_leftTar, m_rightTar;
 
-    private Vector3[] m_zeroLine = new Vector3[2];
-    private List<Vector3> m_leftRopePoints = new List<Vector3>(), m_rightRopePoints = new List<Vector3>();
+    //private List<Vector3> m_leftRopePoints = new List<Vector3>(), m_rightRopePoints = new List<Vector3>();
+    private List<GameObject> m_leftRopePoints = new List<GameObject>(), m_rightRopePoints = new List<GameObject>();
 
     private float m_lengthLeft = 0.0f, m_lengthRight = 0.0f;
 
@@ -67,11 +67,15 @@ public class SwingerRopeController : MonoBehaviour
         {
             Debug.Log("[SwingerController] m_rightRope not found!");
         }
-
-        m_leftRopePoints.Add(Vector3.zero);
-        m_leftRopePoints.Add(Vector3.zero);
-        m_rightRopePoints.Add(Vector3.zero);
-        m_rightRopePoints.Add(Vector3.zero);
+                
+        m_leftRopePoints.Add(new GameObject("leftHandObj"));
+        DontDestroyOnLoad(m_leftRopePoints[0]);
+        m_leftRopePoints.Add(new GameObject("leftPoint"));
+        DontDestroyOnLoad(m_leftRopePoints[1]);
+        m_rightRopePoints.Add(new GameObject("rightHandObj"));
+        DontDestroyOnLoad(m_rightRopePoints[0]);
+        m_rightRopePoints.Add(new GameObject("rightPoint"));
+        DontDestroyOnLoad(m_rightRopePoints[1]);
     }
 	
 	// Update is called once per frame
@@ -88,8 +92,8 @@ public class SwingerRopeController : MonoBehaviour
         Vector3 leftHand = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos);
         Vector3 rightHand = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos);
 
-        m_leftRopePoints[0] = leftHand;
-        m_rightRopePoints[0] = rightHand;
+        m_leftRopePoints[0].transform.position = Vector3.Lerp(m_leftRopePoints[0].transform.position, leftHand, 0.95f);
+        m_rightRopePoints[0].transform.position = Vector3.Lerp(m_rightRopePoints[0].transform.position, rightHand, 0.95f);
 
         //Check for intersections
         RaycastHit intersection;
@@ -100,14 +104,25 @@ public class SwingerRopeController : MonoBehaviour
             {                
                 Debug.Log("left rope interesected " + intersection.collider.name);
                 
-                m_leftRopePoints.Insert(1, Vector3.zero);
+                m_leftRopePoints.Insert(1, new GameObject("leftPoint"));
+                DontDestroyOnLoad(m_leftRopePoints[1]);
+                if(intersection.rigidbody != null)
+                {
+                    m_leftRopePoints[1].transform.parent = intersection.transform;
+                }
                 m_leftTar = intersection;
+
+                m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftTar.normal * 0.05f;
             }
-
-            m_leftRopePoints[1] = m_leftTar.point + m_leftTar.normal * 0.05f;
-
+            
             m_leftRope.positionCount = m_leftRopePoints.Count;
-            m_leftRope.SetPositions(m_leftRopePoints.ToArray());
+
+            Vector3[] poss = new Vector3[m_leftRopePoints.Count];
+            for(int i = 0; i < m_leftRopePoints.Count; i++)
+            {
+                poss[i] = m_leftRopePoints[i].transform.position;
+            }
+            m_leftRope.SetPositions(poss);
         }
         
         if(m_shootRight)
@@ -117,14 +132,21 @@ public class SwingerRopeController : MonoBehaviour
             {
                 Debug.Log("left rope interesected " + intersection.collider.name);
 
-                m_rightRopePoints.Insert(1, Vector3.zero);
+                m_rightRopePoints.Insert(1, new GameObject("rightPoint"));
+                DontDestroyOnLoad(m_rightRopePoints[1]);
                 m_rightTar = intersection;
             }
 
-            m_rightRopePoints[1] = m_rightTar.point + m_rightTar.normal * 0.05f;
+            m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
 
             m_rightRope.positionCount = m_rightRopePoints.Count;
-            m_rightRope.SetPositions(m_rightRopePoints.ToArray());
+
+            Vector3[] poss = new Vector3[m_rightRopePoints.Count];
+            for (int i = 0; i < m_rightRopePoints.Count; i++)
+            {
+                poss[i] = m_rightRopePoints[i].transform.position;
+            }
+            m_rightRope.SetPositions(poss);
         }
     }
 
@@ -164,6 +186,13 @@ public class SwingerRopeController : MonoBehaviour
             m_leftTar = tar;
             m_lengthLeft = Vector3.Distance(m_leftTar.point, m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos)) - 0.1f;
             m_leftRope.enabled = true;
+
+            if (m_leftTar.rigidbody != null)
+            {
+                m_leftRopePoints[1].transform.parent = m_leftTar.transform;
+            }
+            
+            m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftTar.normal * 0.05f;
         }
         else
         {
@@ -181,11 +210,19 @@ public class SwingerRopeController : MonoBehaviour
             m_shootLeft = false;
             m_leftRope.enabled = false;
 
+            for(int i = m_leftRopePoints.Count - 1; i > 1; i--)
+            {
+                Debug.Log("destroying object " + m_leftRopePoints[i].name);
+                Object.Destroy(m_leftRopePoints[i]);                
+            }
+
             m_leftRopePoints.RemoveRange(2, m_leftRopePoints.Count - 2);
-            m_leftRopePoints[0] = Vector3.zero;
-            m_leftRopePoints[1] = Vector3.zero;
+            m_leftRopePoints[0].transform.position = Vector3.zero;
+            m_leftRopePoints[1].transform.position = Vector3.zero;
+            m_leftRopePoints[1].transform.parent = null;
+            DontDestroyOnLoad(m_leftRopePoints[1]);
             m_leftRope.positionCount = 2;
-            m_leftRope.SetPositions(m_leftRopePoints.ToArray());
+            m_leftRope.SetPositions(new Vector3[2]);
 
             //Debug.Log("Release Rope: " + rope.ToString());            
         }
@@ -195,10 +232,12 @@ public class SwingerRopeController : MonoBehaviour
             m_rightRope.enabled = false;
 
             m_rightRopePoints.RemoveRange(2, m_rightRopePoints.Count - 2);
-            m_rightRopePoints[0] = Vector3.zero;
-            m_rightRopePoints[1] = Vector3.zero;
+            m_rightRopePoints[0].transform.position = Vector3.zero;
+            m_rightRopePoints[1].transform.position = Vector3.zero;
+            m_rightRopePoints[1].transform.parent = null;
+            DontDestroyOnLoad(m_rightRopePoints[1]);
             m_rightRope.positionCount = 2;
-            m_rightRope.SetPositions(m_rightRopePoints.ToArray());
+            m_rightRope.SetPositions(new Vector3[2]);
 
             //Debug.Log("Release Rope: " + rope.ToString());
         }
