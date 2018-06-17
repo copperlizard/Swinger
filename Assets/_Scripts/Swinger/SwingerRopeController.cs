@@ -10,7 +10,7 @@ public class SwingerRopeController : MonoBehaviour
 
     [Header("RopeProperties")]
     [SerializeField]
-    private float m_maxRopeForce = 100.0f;
+    private float m_maxRopeForce = 10000.0f;
 
     private SwingerController m_swinger;
 
@@ -134,10 +134,14 @@ public class SwingerRopeController : MonoBehaviour
 
                 m_rightRopePoints.Insert(1, new GameObject("rightPoint"));
                 DontDestroyOnLoad(m_rightRopePoints[1]);
+                if (intersection.rigidbody != null)
+                {
+                    m_rightRopePoints[1].transform.parent = intersection.transform;
+                }
                 m_rightTar = intersection;
-            }
 
-            m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
+                m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
+            }            
 
             m_rightRope.positionCount = m_rightRopePoints.Count;
 
@@ -152,28 +156,43 @@ public class SwingerRopeController : MonoBehaviour
 
     private void ApplyRopePhysics()
     {
-        //Left rope
-        Vector3 leftDir = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos) - m_leftTar.point;
-        leftDir = leftDir.normalized * 100.0f; //plenty of line to project onto
-        float leftForce = Vector3.Dot(m_swinger.Momentum(), leftDir);
-
-        //Debug.Log("leftForce == " + leftForce.ToString());
-
-        if(leftForce > 0.0f && m_shootLeft)
+        if(m_shootLeft)
         {
-            m_swingerRigidBody.AddForce(-leftDir.normalized * leftForce);
+            //Left rope
+            Vector3 leftDir = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos) - m_leftTar.point;
+            leftDir = leftDir.normalized * 100.0f; //plenty of line to project onto
+            float leftForce = Mathf.Min(Vector3.Dot(m_swinger.Momentum(), leftDir), m_maxRopeForce);
+
+            //Debug.Log("leftForce == " + leftForce.ToString());
+
+            if (leftForce > 0.0f)
+            {
+                m_swingerRigidBody.AddForce(-leftDir.normalized * leftForce);
+                if (m_leftTar.rigidbody != null)
+                {
+                    Debug.Log("pulling leftTar!!!");
+                    m_leftTar.rigidbody.AddForceAtPosition(leftDir.normalized * leftForce, m_leftTar.point);
+                }
+            }
         }
 
-        //Right rope
-        Vector3 rightDir = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos) - m_rightTar.point;
-        rightDir = rightDir.normalized * 100.0f; //plenty of line to project onto
-        float rightForce = Vector3.Dot(m_swinger.Momentum(), rightDir);
-
-        //Debug.Log("rightForce == " + rightForce.ToString());
-
-        if (rightForce > 0.0f && m_shootRight)
+        if (m_shootRight)
         {
-            m_swingerRigidBody.AddForce(-rightDir.normalized * rightForce);
+            //Right rope
+            Vector3 rightDir = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos) - m_rightTar.point;
+            rightDir = rightDir.normalized * 100.0f; //plenty of line to project onto
+            float rightForce = Mathf.Min(Vector3.Dot(m_swinger.Momentum(), rightDir), m_maxRopeForce);
+
+            //Debug.Log("rightForce == " + rightForce.ToString());
+
+            if (rightForce > 0.0f)
+            {
+                m_swingerRigidBody.AddForce(-rightDir.normalized * rightForce);
+                if (m_rightTar.rigidbody != null)
+                {
+                    m_rightTar.rigidbody.AddForceAtPosition(rightDir.normalized * rightForce, m_rightTar.point);
+                }
+            }
         }
     }
 
@@ -200,6 +219,13 @@ public class SwingerRopeController : MonoBehaviour
             m_rightTar = tar;
             m_lengthRight = Vector3.Distance(m_rightTar.point, m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos)) - 0.1f;
             m_rightRope.enabled = true;
+
+            if (m_rightTar.rigidbody != null)
+            {
+                m_rightRopePoints[1].transform.parent = m_rightTar.transform;
+            }
+
+            m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
         }
     }
 
