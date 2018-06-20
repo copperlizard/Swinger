@@ -67,8 +67,7 @@ public class SwingerController : MonoBehaviour
         {
             Debug.Log("[SwingerController] m_rigidbody not found!");
         }
-
-        
+                
 
         //Starting orientation (z always 0)
         m_xAng = transform.rotation.eulerAngles.x;

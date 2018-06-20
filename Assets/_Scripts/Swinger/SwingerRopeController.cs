@@ -78,7 +78,6 @@ public class SwingerRopeController : MonoBehaviour
         DontDestroyOnLoad(m_rightRopePoints[1]);
     }
 	
-	// Update is called once per frame
 	void FixedUpdate ()
     {
         UpdateRopePositions();
