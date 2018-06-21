@@ -53,7 +53,7 @@ public class SwingerInput : MonoBehaviour
             m_shotLeft = true;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             //if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
-            if (Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach))
+            if (Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach, ~LayerMask.GetMask("Player")))
             {
                 // Left rope
                 m_ropes.ShootRope(SwingerRopeController.Rope.Left, m_clickAt);
@@ -65,7 +65,7 @@ public class SwingerInput : MonoBehaviour
             m_shotRight = true;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             //if (Physics.Raycast(ray, out m_clickAt, m_maxReach))
-            if(Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach))
+            if(Physics.SphereCast(ray, m_clickRadius, out m_clickAt, m_maxReach, ~LayerMask.GetMask("Player")))
             {
                 // Right Rope
                 m_ropes.ShootRope(SwingerRopeController.Rope.Right, m_clickAt);

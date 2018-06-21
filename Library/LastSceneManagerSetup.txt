@@ -1,7 +1,7 @@
 sceneSetups:
-- path: Assets/_Scenes/Test1A.unity
+- path: Assets/_Scenes/HUB.unity
   isLoaded: 1
   isActive: 1
-- path: Assets/_Scenes/Test1B.unity
+- path: Assets/_Scenes/ToZoneA.unity
   isLoaded: 0
   isActive: 0

@@ -77,10 +77,15 @@ public class SwingerRopeController : MonoBehaviour
         m_rightRopePoints.Add(new GameObject("rightPoint"));
         DontDestroyOnLoad(m_rightRopePoints[1]);
     }
+
+    void LateUpdate ()
+    {
+        UpdateRopePositions();
+    }
 	
 	void FixedUpdate ()
     {
-        UpdateRopePositions();
+        //UpdateRopePositions();
         ApplyRopePhysics();
 	}
 
@@ -91,8 +96,8 @@ public class SwingerRopeController : MonoBehaviour
         Vector3 leftHand = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos);
         Vector3 rightHand = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos);
 
-        m_leftRopePoints[0].transform.position = Vector3.Lerp(m_leftRopePoints[0].transform.position, leftHand, 0.95f);
-        m_rightRopePoints[0].transform.position = Vector3.Lerp(m_rightRopePoints[0].transform.position, rightHand, 0.95f);
+        m_leftRopePoints[0].transform.position = Vector3.Lerp(m_leftRopePoints[0].transform.position, leftHand, 0.5f);
+        m_rightRopePoints[0].transform.position = Vector3.Lerp(m_rightRopePoints[0].transform.position, rightHand, 0.5f);
 
         //Check for intersections
         RaycastHit intersection;
@@ -168,8 +173,7 @@ public class SwingerRopeController : MonoBehaviour
             {
                 m_swingerRigidBody.AddForce(-leftDir.normalized * leftForce);
                 if (m_leftTar.rigidbody != null)
-                {
-                    Debug.Log("pulling leftTar!!!");
+                {   
                     m_leftTar.rigidbody.AddForceAtPosition(leftDir.normalized * leftForce, m_leftTar.point);
                 }
             }
