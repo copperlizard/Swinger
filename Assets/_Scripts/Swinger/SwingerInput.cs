@@ -6,7 +6,7 @@ using UnityEngine;
 public class SwingerInput : MonoBehaviour
 {   
     [SerializeField]
-    private float m_maxReach = 50.0f, m_clickRadius = 0.3f;
+    private float m_maxReach = 100.0f, m_clickRadius = 0.3f;
 
     private SwingerController m_swinger;
     //private SwingerCamera m_cam;

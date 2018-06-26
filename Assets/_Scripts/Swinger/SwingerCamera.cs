@@ -34,8 +34,8 @@ public class SwingerCamera : MonoBehaviour
 	void LateUpdate ()
     {
         //transform.position = m_target.transform.position;
-        transform.position = Vector3.Lerp(transform.position, m_target.transform.position, 0.5f);
+        transform.position = Vector3.Lerp(transform.position, m_target.transform.position, 15.0f * Time.deltaTime);
         //transform.rotation = m_target.transform.rotation;
-        transform.rotation = Quaternion.Lerp(transform.rotation, m_target.transform.rotation, 0.5f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, m_target.transform.rotation, 15.0f * Time.deltaTime);
 	}
 }

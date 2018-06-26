@@ -234,10 +234,10 @@ MonoBehaviour:
   m_camHeight: 1
   m_camLookEdge0: 0.4
   m_camLookEdge1: 1
-  m_moveSpeed: 12
-  m_airMoveSpeed: 8
+  m_moveSpeed: 10
+  m_airMoveSpeed: 20
   m_turnSpeed: 3
-  m_jumpForce: 6000
+  m_jumpForce: 12000
   m_leftHandPos: {x: -0.25, y: -0.25, z: 0}
   m_rightHandPos: {x: 0, y: 0, z: 0}
 --- !u!114 &114422314586036782
@@ -251,7 +251,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f752d931af041342a602890ef94956d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_maxReach: 100
+  m_maxReach: 200
   m_clickRadius: 0.3
 --- !u!114 &114905214480275872
 MonoBehaviour:

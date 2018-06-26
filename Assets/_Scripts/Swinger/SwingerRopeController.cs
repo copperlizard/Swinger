@@ -96,8 +96,8 @@ public class SwingerRopeController : MonoBehaviour
         Vector3 leftHand = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos);
         Vector3 rightHand = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos);
 
-        m_leftRopePoints[0].transform.position = Vector3.Lerp(m_leftRopePoints[0].transform.position, leftHand, 0.5f);
-        m_rightRopePoints[0].transform.position = Vector3.Lerp(m_rightRopePoints[0].transform.position, rightHand, 0.5f);
+        m_leftRopePoints[0].transform.position = Vector3.Lerp(m_leftRopePoints[0].transform.position, leftHand, 15.0f * Time.deltaTime);
+        m_rightRopePoints[0].transform.position = Vector3.Lerp(m_rightRopePoints[0].transform.position, rightHand, 15.0f * Time.deltaTime);
 
         //Check for intersections
         RaycastHit intersection;
@@ -213,7 +213,8 @@ public class SwingerRopeController : MonoBehaviour
             {
                 m_leftRopePoints[1].transform.parent = m_leftTar.transform;
             }
-            
+
+            m_leftRopePoints[0].transform.position = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos);
             m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftTar.normal * 0.05f;
         }
         else
@@ -228,6 +229,7 @@ public class SwingerRopeController : MonoBehaviour
                 m_rightRopePoints[1].transform.parent = m_rightTar.transform;
             }
 
+            m_rightRopePoints[0].transform.position = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos);
             m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
         }
     }
