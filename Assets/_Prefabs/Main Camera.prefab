@@ -98,6 +98,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_target: {fileID: 0}
+  m_leftHandPos: {x: -0.25, y: -0.25, z: 0}
+  m_rightHandPos: {x: 0, y: 0, z: 0}
 --- !u!124 &124947280351582002
 Behaviour:
   m_ObjectHideFlags: 1

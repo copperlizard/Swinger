@@ -13,6 +13,7 @@ public class SwingerRopeController : MonoBehaviour
     private float m_maxRopeForce = 10000.0f;
 
     private SwingerController m_swinger;
+    private SwingerCamera m_swingerCam;
 
     private Rigidbody m_swingerRigidBody;
 
@@ -40,6 +41,12 @@ public class SwingerRopeController : MonoBehaviour
         {
             Debug.Log("Destroying Duplicate: " + this.gameObject);
             Destroy(this.gameObject);
+        }
+
+        m_swingerCam = Camera.main.GetComponent<SwingerCamera>();
+        if(m_swingerCam == null)
+        {
+            Debug.Log("[SwingerRopeController] m_swingerCam not found!");
         }
 
         m_swinger = GameObject.FindGameObjectWithTag("Player").GetComponent<SwingerController>();
@@ -93,30 +100,54 @@ public class SwingerRopeController : MonoBehaviour
     //private List<Vector3> m_inters = new List<Vector3>();
     private void UpdateRopePositions()
     {
-        Vector3 leftHand = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos);
-        Vector3 rightHand = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos);
+        Vector3 leftHand = m_swinger.transform.TransformPoint(m_swingerCam.m_leftHandPos);
+        Vector3 rightHand = m_swinger.transform.TransformPoint(m_swingerCam.m_rightHandPos);
 
         m_leftRopePoints[0].transform.position = Vector3.Lerp(m_leftRopePoints[0].transform.position, leftHand, 15.0f * Time.deltaTime);
         m_rightRopePoints[0].transform.position = Vector3.Lerp(m_rightRopePoints[0].transform.position, rightHand, 15.0f * Time.deltaTime);
+        //m_leftRopePoints[0].transform.position = leftHand;
+        //m_rightRopePoints[0].transform.position = rightHand;
 
         //Check for intersections
         RaycastHit intersection;
         if(m_shootLeft)
-        {   
+        {
             Vector3 leftDir = m_leftTar.point - leftHand;
             if (Physics.Raycast(leftHand, leftDir.normalized, out intersection, leftDir.magnitude - 0.1f, ~LayerMask.GetMask("Player", "Ignore Raycast")))
-            {                
+            
+            //has weird "slow wrapping" side effect    
+            //Vector3 leftDir = leftHand - m_leftTar.point;
+            /*Vector3 leftDir = leftHand - m_leftRopePoints[1].transform.position;
+            if (Physics.Raycast(m_leftRopePoints[1].transform.position, leftDir.normalized, 
+                out intersection, leftDir.magnitude, ~LayerMask.GetMask("Player", "Ignore Raycast")))*/
+            {
                 Debug.Log("left rope interesected " + intersection.collider.name);
-                
-                m_leftRopePoints.Insert(1, new GameObject("leftPoint"));
-                DontDestroyOnLoad(m_leftRopePoints[1]);
-                if(intersection.rigidbody != null)
-                {
-                    m_leftRopePoints[1].transform.parent = intersection.transform;
-                }
-                m_leftTar = intersection;
 
-                m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftTar.normal * 0.05f;
+                // Ensure minimum rope segment length
+                if(Vector3.Distance(m_leftRopePoints[1].transform.position, intersection.point) > 0.3f)
+                {
+                    // Add new rope point
+                    m_leftRopePoints.Insert(1, new GameObject("leftPoint"));
+                    DontDestroyOnLoad(m_leftRopePoints[1]);
+
+                    // "Attatch" to body if available
+                    if (intersection.rigidbody != null)
+                    {
+                        m_leftRopePoints[1].transform.parent = intersection.transform;
+                    }
+
+                    // Update m_leftTar and rope points
+                    m_leftTar = intersection;
+                    m_leftRopePoints[1].transform.up = m_leftTar.normal;
+                    m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftRopePoints[1].transform.up * 0.01f;
+
+                    // Wrap around sharp corners... (works okay wrapping one object, but not well with multiple objects)
+                    if (Vector3.Dot(m_leftRopePoints[1].transform.up, m_leftRopePoints[2].transform.up) <= 0.5f)
+                    {
+                        Debug.Log("sharp corner detected!");
+                        m_leftRopePoints[1].transform.position += m_leftRopePoints[2].transform.up * 0.085f;
+                    }
+                }
             }
             
             m_leftRope.positionCount = m_leftRopePoints.Count;
@@ -144,7 +175,7 @@ public class SwingerRopeController : MonoBehaviour
                 }
                 m_rightTar = intersection;
 
-                m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
+                m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.01f;
             }            
 
             m_rightRope.positionCount = m_rightRopePoints.Count;
@@ -163,7 +194,7 @@ public class SwingerRopeController : MonoBehaviour
         if(m_shootLeft)
         {
             //Left rope
-            Vector3 leftDir = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos) - m_leftTar.point;
+            Vector3 leftDir = m_swinger.transform.TransformPoint(m_swingerCam.m_leftHandPos) - m_leftTar.point;
             leftDir = leftDir.normalized * 100.0f; //plenty of line to project onto
             float leftForce = Mathf.Min(Vector3.Dot(m_swinger.Momentum(), leftDir), m_maxRopeForce);
 
@@ -182,7 +213,7 @@ public class SwingerRopeController : MonoBehaviour
         if (m_shootRight)
         {
             //Right rope
-            Vector3 rightDir = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos) - m_rightTar.point;
+            Vector3 rightDir = m_swinger.transform.TransformPoint(m_swingerCam.m_rightHandPos) - m_rightTar.point;
             rightDir = rightDir.normalized * 100.0f; //plenty of line to project onto
             float rightForce = Mathf.Min(Vector3.Dot(m_swinger.Momentum(), rightDir), m_maxRopeForce);
 
@@ -206,7 +237,7 @@ public class SwingerRopeController : MonoBehaviour
         {
             m_shootLeft = true;
             m_leftTar = tar;
-            m_lengthLeft = Vector3.Distance(m_leftTar.point, m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos)) - 0.1f;
+            m_lengthLeft = Vector3.Distance(m_leftTar.point, m_swinger.transform.TransformPoint(m_swingerCam.m_leftHandPos)) - 0.1f;
             m_leftRope.enabled = true;
 
             if (m_leftTar.rigidbody != null)
@@ -214,14 +245,15 @@ public class SwingerRopeController : MonoBehaviour
                 m_leftRopePoints[1].transform.parent = m_leftTar.transform;
             }
 
-            m_leftRopePoints[0].transform.position = m_swinger.transform.TransformPoint(m_swinger.m_leftHandPos);
-            m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftTar.normal * 0.05f;
+            m_leftRopePoints[0].transform.position = m_swinger.transform.TransformPoint(m_swingerCam.m_leftHandPos);
+            m_leftRopePoints[1].transform.position = m_leftTar.point + m_leftTar.normal * 0.01f;
+            m_leftRopePoints[1].transform.up = m_leftTar.normal;
         }
         else
         {
             m_shootRight = true;
             m_rightTar = tar;
-            m_lengthRight = Vector3.Distance(m_rightTar.point, m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos)) - 0.1f;
+            m_lengthRight = Vector3.Distance(m_rightTar.point, m_swinger.transform.TransformPoint(m_swingerCam.m_rightHandPos)) - 0.1f;
             m_rightRope.enabled = true;
 
             if (m_rightTar.rigidbody != null)
@@ -229,8 +261,9 @@ public class SwingerRopeController : MonoBehaviour
                 m_rightRopePoints[1].transform.parent = m_rightTar.transform;
             }
 
-            m_rightRopePoints[0].transform.position = m_swinger.transform.TransformPoint(m_swinger.m_rightHandPos);
-            m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.05f;
+            m_rightRopePoints[0].transform.position = m_swinger.transform.TransformPoint(m_swingerCam.m_rightHandPos);
+            m_rightRopePoints[1].transform.position = m_rightTar.point + m_rightTar.normal * 0.01f;
+            m_rightRopePoints[1].transform.up = m_rightTar.normal;
         }
     }
 
@@ -275,27 +308,13 @@ public class SwingerRopeController : MonoBehaviour
     }
 
     private void OnDrawGizmos()
-    {
-        /*Gizmos.DrawSphere(m_leftTar.point, 0.1f);
-        Gizmos.DrawSphere(m_rightTar.point, 0.1f);
-
-        Gizmos.color = Color.red;
-        foreach(Vector3 v in m_inters)
+    {   
+        foreach(GameObject ropePoint in m_leftRopePoints)
         {
-            Gizmos.DrawWireCube(v, Vector3.one * 0.1f);
-        }*/
-
-        if(m_leftRope != null)
-        {
-            Vector3[] points = new Vector3[m_leftRope.positionCount];
-            m_leftRope.GetPositions(points);
-            float b = 0.0f;
-            foreach (Vector3 v in points)
-            {
-                Gizmos.color = Color.yellow * b;
-                Gizmos.DrawWireSphere(v, 0.1f);
-                b += 1.0f / m_leftRope.positionCount;
-            }
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(ropePoint.transform.position, 0.1f);
+            Gizmos.color = Color.green;
+            Gizmos.DrawLine(ropePoint.transform.position, ropePoint.transform.position + ropePoint.transform.up);
         }
     }
 }

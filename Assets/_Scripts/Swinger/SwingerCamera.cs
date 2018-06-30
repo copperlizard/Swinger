@@ -7,6 +7,12 @@ public class SwingerCamera : MonoBehaviour
     [SerializeField]
     private GameObject m_target;
 
+    //[SerializeField]
+    public Vector3 m_leftHandPos = new Vector3(-0.25f, 0.25f, 0.0f); //in local space...
+
+    [HideInInspector]
+    public Vector3 m_rightHandPos; //Ymirror of left hand pos
+
     private Camera m_cam;
 
 	// Use this for initialization
@@ -21,13 +27,16 @@ public class SwingerCamera : MonoBehaviour
             }
         }
 
-        m_cam = GetComponentInChildren<Camera>();
+       
+        /*m_cam = GetComponent<Camera>();
         if (m_cam == null)
         {
             Debug.Log("[SwingerCamera] m_cam not found!");
-        }
+        }*/
 
         Cursor.lockState = CursorLockMode.Confined;
+
+        m_rightHandPos = new Vector3(-m_leftHandPos.x, m_leftHandPos.y, m_leftHandPos.z);
     }
 	
 	// Update is called once per frame

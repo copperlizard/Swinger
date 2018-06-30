@@ -68,6 +68,7 @@
     <Compile Include="Assets\_Scripts\Swinger\SwingerController.cs" />
     <Compile Include="Assets\_Scripts\Swinger\SwingerInput.cs" />
     <Compile Include="Assets\_Scripts\Swinger\SwingerRopeController.cs" />
+    <None Include="Assets\_Shaders\RopeShader1.shader" />
     <Reference Include="UnityEditor.StandardEvents">
       <HintPath>D:/UnityProjects/Swinger/Library/ScriptAssemblies/UnityEditor.StandardEvents.dll</HintPath>
     </Reference>

@@ -18,12 +18,12 @@ public class SwingerController : MonoBehaviour
     [SerializeField]
     private float m_airMoveSpeed, m_turnSpeed = 5.0f, m_jumpForce = 10.0f;
 
-    [Header("Misc Settings")]
+    /*[Header("Misc Settings")]
     //[SerializeField]
     public Vector3 m_leftHandPos = new Vector3(-0.25f, 0.25f, 0.0f); //in local space...
 
     [HideInInspector]
-    public Vector3 m_rightHandPos; //Ymirror of left hand pos
+    public Vector3 m_rightHandPos; //Ymirror of left hand pos*/
 
     private static bool created = false;
 
@@ -54,7 +54,7 @@ public class SwingerController : MonoBehaviour
             Destroy(this.gameObject);
         }
 
-        m_rightHandPos = new Vector3(-m_leftHandPos.x, m_leftHandPos.y, m_leftHandPos.z);
+        //m_rightHandPos = new Vector3(-m_leftHandPos.x, m_leftHandPos.y, m_leftHandPos.z);
 
         m_input = GetComponent<SwingerInput>();
         if(m_input == null)
