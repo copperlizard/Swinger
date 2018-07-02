@@ -5,6 +5,9 @@ using UnityEngine;
 public class SwingerCamera : MonoBehaviour
 {
     [SerializeField]
+    private Texture2D m_cursorSprite;
+
+    [SerializeField]
     private GameObject m_target;
 
     //[SerializeField]
@@ -12,8 +15,6 @@ public class SwingerCamera : MonoBehaviour
 
     [HideInInspector]
     public Vector3 m_rightHandPos; //Ymirror of left hand pos
-
-    private Camera m_cam;
 
 	// Use this for initialization
 	void Start ()
@@ -27,24 +28,27 @@ public class SwingerCamera : MonoBehaviour
             }
         }
 
-       
-        /*m_cam = GetComponent<Camera>();
-        if (m_cam == null)
-        {
-            Debug.Log("[SwingerCamera] m_cam not found!");
-        }*/
-
         Cursor.lockState = CursorLockMode.Confined;
+
+        if(m_cursorSprite != null)
+        {
+            Cursor.SetCursor(m_cursorSprite, new Vector2(32.0f, 32.0f), CursorMode.Auto);
+        }
 
         m_rightHandPos = new Vector3(-m_leftHandPos.x, m_leftHandPos.y, m_leftHandPos.z);
     }
 	
-	// Update is called once per frame
+	// LateUpdate is called once per frame
 	void LateUpdate ()
     {
         //transform.position = m_target.transform.position;
-        transform.position = Vector3.Lerp(transform.position, m_target.transform.position, 15.0f * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, m_target.transform.position, 17.0f * Time.deltaTime);
         //transform.rotation = m_target.transform.rotation;
-        transform.rotation = Quaternion.Lerp(transform.rotation, m_target.transform.rotation, 15.0f * Time.deltaTime);
+        transform.rotation = Quaternion.Lerp(transform.rotation, m_target.transform.rotation, 17.0f * Time.deltaTime);
 	}
+
+    void OnGUI()
+    {
+        GUI.skin.settings.cursorColor = Color.blue;        
+    }
 }

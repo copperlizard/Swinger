@@ -207,7 +207,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 64
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &65575596314984152
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -238,8 +238,6 @@ MonoBehaviour:
   m_airMoveSpeed: 20
   m_turnSpeed: 3
   m_jumpForce: 12000
-  m_leftHandPos: {x: -0.25, y: -0.25, z: 0}
-  m_rightHandPos: {x: 0, y: 0, z: 0}
 --- !u!114 &114422314586036782
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -264,7 +262,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ab2648985c3fc0041a513dc6222b0cfc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_cursorSprite: {fileID: 0}
   m_target: {fileID: 0}
+  m_leftHandPos: {x: -0.25, y: 0.25, z: 0}
+  m_rightHandPos: {x: 0, y: 0, z: 0}
 --- !u!135 &135686605455267546
 SphereCollider:
   m_ObjectHideFlags: 1
